@@ -2,7 +2,6 @@ import { useContext } from "react";
 import {userData, screenSt, editYourInfo} from "../../../contexts"
 
 import edit from "../../../utilities/edit.svg";
-import tempProfile from "C:/Users/m0101/OneDrive/Pictures/MyPhotos/1000161993.jpg"
 
 export default function YourInfo()
 {

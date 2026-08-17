@@ -198,6 +198,7 @@ export default function Contact(props) {
       {
         setThreadData(threadFriend[0]);
       }
+     
       setScreenState(1);
       return;
     }
