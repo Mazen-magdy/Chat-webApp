@@ -1,0 +1,42 @@
+@import '../theme.css';
+
+#login {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background);
+}
+
+#login > #container {
+    border: 1px solid var(--nutral1-color);
+    width: 80%;
+    max-width: 1200px;
+    padding: 2rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 15px;
+    border-radius: 12px;
+    background-color: var(--background);
+    box-shadow: 1px 1px 1px var(--nutral1-color);
+    transition: scale 0.3s ;
+    text-align: center;
+}
+#login > #container:hover{
+    scale: 1.05;
+}
+
+#login > #container img {
+    width: 200px;
+    max-width: 100%;
+}
+#login > #container > div > h2{
+    margin-bottom: 0;
+}
+#login > #container > div > p{
+    font-size: small;
+    color: #474747;
+}

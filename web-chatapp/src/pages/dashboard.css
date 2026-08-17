@@ -1,0 +1,400 @@
+@import "../theme.css";
+
+#dashboard{
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    margin: 0;
+    padding: 0;
+}
+#dashboard > #container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+#dashboard > #container > section{
+    padding: 0 30px;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    /* border: 1px solid #0f0; */
+}
+/** Contacts section */
+#dashboard #contacts{
+    min-width: 500px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    gap: 15px;
+    position: relative;
+}
+@media (max-width:768px) {
+
+    #dashboard #contacts{
+        flex-grow: 1;
+    
+    }
+}
+#dashboard #contacts .expander{ 
+    min-width: fit-content;
+    width: 15px;
+    height: 50px;
+    border-radius: 3px;
+    background-color: var(--text-disabled);
+    opacity: 0.4;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    transform: translateX(50%);
+    display: grid;
+    place-items: center;
+    transition: opacity 0.2s;
+    cursor: e-resize;
+}
+#dashboard #contacts .expander:active{
+    opacity: 1;
+} 
+/* YourInfo */
+#dashboard #contacts #yourInfo{
+    background-color: transparent;
+    width: 100%;
+    height: 80px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 100px;
+    transition: opacity 0.2s ease-in-out;
+}
+#dashboard #contacts #yourInfo:hover{
+    opacity: 0.8;
+}
+#dashboard #contacts #yourInfo div{
+    width: 70%;
+    text-align: left;
+}
+
+#dashboard #contacts #yourInfo #profile{
+    height:  80px;
+    border-radius: 10px;
+}
+#dashboard #contacts #yourInfo div > *{
+    margin: 1px;
+}
+
+#dashboard #contacts #yourInfo #edit{
+    cursor: pointer;    
+}
+/* Search Bar */
+#dashboard #contacts .searchbar{
+    width: 100%;
+    height: 40px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+}
+#dashboard #contacts .searchbar img{
+    position: absolute;
+    margin: 1px;
+}
+#dashboard #contacts .searchbar input{
+    padding-left: 30px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--nutral2-color);
+    color: var(--text-color);
+    border-radius: 10px;
+    border: none;
+}
+    /* contancts */
+#dashboard #contacts .chats{
+    width: 100%;
+    min-height: 0;
+    flex: 1;
+    overflow-y: auto;
+}
+#dashboard .chats .person{
+    width: 100%;
+    height: 100px;
+    padding: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    border-bottom: 2px solid var(--nutral1-color);
+    transition: background 0.1s;
+    border-radius: 10px;
+}
+#dashboard .chats .person:hover{
+    cursor: pointer ;
+    background-color: rgba(0, 0, 0, 0.01);
+}
+#dashboard .chats .person img{
+    width: 70px;
+    aspect-ratio: 1;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 10px;
+}
+#dashboard .chats .person .info{
+    height: 100%;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    margin: 0 !important;
+    
+}
+
+#dashboard .chats .person .info > *{
+    margin: 0;
+}
+
+#dashboard .chats .person .info > p{
+    color: var(--text-disabled);
+}
+
+/** Chat section */
+#dashboard #chat{
+    height: 100%;
+    flex-grow: 1;
+    padding: 0 !important;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+    /* Header */
+#dashboard #chat .header{
+    width: 100%;
+    padding: 0 15px ;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--nutral1-color);
+    min-height: 64px;
+}
+
+#dashboard #chat .backbtn{
+    width: 15px;
+}
+#dashboard #chat .icons{
+    display: flex;
+    gap: 15px;
+    cursor: pointer;
+}
+
+/* Body */
+#dashboard #chat .body{
+    background-color: var(--nutral2-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#dashboard #chat .body .message{
+    max-width: 60% !important;
+    min-height: 50px;
+    margin: 10px;
+    padding: 6px;
+    background-color: var(--background);
+    border-radius: 10px;
+}
+
+#dashboard #chat .body .message .information{
+    margin: 5px;
+}
+#dashboard #chat .body .message .time{
+    color: var(--text-disabled);
+    margin:0;
+    font-size: smaller;
+}
+#dashboard #chat .body .sender{
+    align-self: flex-start;
+    border-bottom-left-radius: 0;
+}
+#dashboard #chat .body .reciever{
+    align-self: flex-end;
+    border-bottom-right-radius: 0;
+    background-color: var(--primary-color);
+    color: var(--background);
+}
+
+#dashboard #chat .body .reciever .time{
+    text-align: right;
+    color: var(--background);
+}
+    /* footer */
+    #dashboard #chat .footer{
+        display: grid;
+        grid-template-columns: 40px minmax(0, 1fr) 40px;
+        grid-template-rows:1fr;
+        align-items: center;
+        border: 1px solid var(--nutral1-color);
+        /* text-align: center; */
+        justify-items: center;
+        min-height: 68px;
+        padding: 8px 12px;
+        min-width: 0;
+    }
+    #dashboard #chat .footer img{
+    cursor: pointer;
+    width: 20px;
+    transition: scale 0.1s;
+}
+#dashboard #chat .footer img:hover{
+    scale: 1.1;
+}
+#dashboard #chat .footer textarea{
+    width: 100%;
+    height: 80%;
+    padding: 9px 12px;
+    resize: none;
+    vertical-align: top;
+    overflow-y: auto;
+    background-color: var(--nutral2-color);
+    border: 0;
+    min-width: 0;
+    font: inherit;
+    outline: none;
+}
+
+/** Responsive */
+
+@media (max-width : 768px) {
+    #dashboard > #container > section{
+        width: 100% !important;   
+    }
+    #dashboard #contacts { min-width: 0; }
+    #dashboard #chat .body .message { max-width: 78% !important; }
+    #dashboard #chat .header { padding: 0 12px; }
+    #dashboard #chat .header .name { max-width: calc(100% - 112px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 1.05rem; }
+    #dashboard #info .info-container { padding: 22px 18px; }
+}
+
+/** Info section */
+#dashboard #info{
+    height: 100%;
+    flex-grow: 1;
+    padding: 0 !important;
+    background-color: var(--background);
+    overflow-y: auto;
+}
+
+#dashboard #info.disabled{
+    display: none;
+}
+
+#dashboard #info .info-container{
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+#dashboard #info .info-header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--nutral1-color);
+    padding-bottom: 15px;
+}
+
+#dashboard #info .info-header h2{
+    margin: 0;
+    color: var(--text-color);
+}
+
+#dashboard #info .close-btn{
+    width: 20px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+#dashboard #info .close-btn:hover{
+    transform: scale(1.1);
+}
+
+#dashboard #info .info-content{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+}
+
+#dashboard #info .profile-image{
+    display: flex;
+    justify-content: center;
+}
+
+#dashboard #info .profile-image img{
+    width: 150px;
+    height: 150px;
+    border-radius: 15px;
+    object-fit: cover;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#dashboard #info .info-details{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+#dashboard #info .info-item{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#dashboard #info .info-item label{
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+#dashboard #info .info-item p{
+    color: var(--text-disabled);
+    margin: 0;
+    padding: 10px;
+    background-color: var(--nutral2-color);
+    border-radius: 8px;
+    word-break: break-all;
+}
+
+/* Menu button styling */
+#dashboard #contacts #yourInfo .menu-btn{
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    color: var(--text-color);
+    transition: transform 0.2s;
+}
+
+#dashboard #contacts #yourInfo .menu-btn:hover{
+    transform: scale(1.1);
+}

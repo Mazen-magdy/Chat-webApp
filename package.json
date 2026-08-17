@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "env": "^0.0.2",
+    "react-qr-code": "^2.2.0",
+    "react-router-dom": "^7.18.1"
+  }
+}
