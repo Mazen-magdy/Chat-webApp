@@ -91,27 +91,16 @@ async function getThreadGroup(supabase, keys)
 
 
 export default function Contact(props) {
-  console.log("render-------------------------------------")
   //props extraction
   const {contactSection} = props;
   //states
+  const [isLoadingSearch, setIsLoadingSearch] = useState(0);
+  const [isLoadingChat, setIsLoadingChat] = useState(0);
   const [searchResults, setSearchResult] = useState(0);
   const [contacts, setContacts] = useState([]);
   const [isInitialized, setIsInitialized] = useState(false);
   // ref
   let contactsRef = useRef([
-    {
-      id: 1,
-      name: 'Moamen Hassabllah',
-      lastMessage: 'اي الاخبار',
-      avatar: User1,
-    },
-    {
-      id: 1,
-      name: 'Moamen Hassabllah',
-      lastMessage: 'اي الاخبار',
-      avatar: User1,
-    },
   ]);
   // var contacts = contactsRef.current
   // context variables
@@ -139,16 +128,19 @@ export default function Contact(props) {
   
   // actions
   const handleSearch = async (event) => {
+    setIsLoadingSearch(1);
     setSearchState(event.target.value);
     console.log(event.target.value)
     if(event.target.value == "")
     {setContacts(userInfo.friends);}
+
     var {data:res, error:err} = await searchForUser(supabase, '2'+event.target.value,userInfo.friends);
     console.log(res, err);
     if(err)
     {
       console.log("Search error:", err);
       setContacts([]);
+      setIsLoadingSearch(0);
       return;
     }
     if(res == undefined || !Array.isArray(res) || res.length == 0)
@@ -159,6 +151,7 @@ export default function Contact(props) {
     }
     console.log(res)
     setSearchResult(0); 
+    setIsLoadingSearch(0);
   }; //! there is an unexpected rerender inspect it and continue search process
     const handleUnfocus = (e)=>{
       // // contacts = userInfo.friends;
@@ -167,6 +160,7 @@ export default function Contact(props) {
       // setSearchResult(1);
     }
   const handleChatSelect = async (event) =>{
+    setIsLoadingChat(1);
     console.log(event.target)
     // try to get the thread with the target id if found this is a group else construct keys and get the DM
     if(threadData != null )
@@ -175,12 +169,14 @@ export default function Contact(props) {
       {
         console.log("abort")
         setScreenState(1);
+        setIsLoadingChat(0);
         return
       }
     }
     else if(event.target.id == "")
     {
       console.log("abort")
+      setIsLoadingChat(0);
       return
     }
     const {data:thread, error} = await getThreadGroup(supabase, event.target.id);
@@ -200,6 +196,7 @@ export default function Contact(props) {
       }
      
       setScreenState(1);
+      setIsLoadingChat(0);
       return;
     }
     
@@ -213,6 +210,7 @@ export default function Contact(props) {
         {
           console.log("already exists")
           setScreenState(1);
+          setIsLoadingChat(0);
           return
         }
       }
@@ -228,6 +226,7 @@ export default function Contact(props) {
       setThreadData(thread[0]);
     }
     setScreenState(1);
+    setIsLoadingChat(0);
   };
   
   return (
@@ -235,27 +234,30 @@ export default function Contact(props) {
       <YourInfo />
       <div className="searchbar">
         <img src={searchIcon} alt="search" ref={iconRef} />
+        {isLoadingSearch ? <span className="search-loading" role="status">Searching...</span> : null}
         <input
           type="text"
           ref={searchRef}
           placeholder="search"
+          aria-label="Search contacts by phone number"
           value={searchState}
           onChange={handleSearch}
           onBlur = {handleUnfocus}
         />
       </div>
+      {isLoadingChat ? <div className="selection-loading" role="status"><span className="state-spinner" aria-hidden="true" />Opening conversation...</div> : null}
       <div className="chats">
-        {contacts.map((contact) => (
+        {!isInitialized ? <div className="state-message" role="status"><span className="state-spinner" aria-hidden="true" />Loading your contacts...</div> : contacts.length? contacts.map((contact) => (
           <ContactListItem
             key={contact.user_id}
             id = {null}
             keys={contact.user_id}
-            name={contact.name}
-            lastMessage={"contact.lastMessage"}
+            name={contact.name || "Unnamed contact"}
+            lastMessage={contact.lastMessage || "Start a conversation"}
             avatar={contact.imageUrl}
             clickHandler={handleChatSelect}
           />
-        ))}
+        )) : <div className="state-message">{isLoadingSearch ? <><span className="state-spinner" aria-hidden="true" />Searching contacts...</> : "No contacts yet"}</div>}
       </div>
       <div className="expander" ref={resizeRef}>⋮</div>
     </section>

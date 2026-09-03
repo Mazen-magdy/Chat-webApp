@@ -2,7 +2,8 @@ import { useCallback, useContext, useState} from 'react'
 import { Route , useNavigate } from 'react-router-dom';
 //contexts
 import {supabaseClient} from '../../contexts'
-
+//libs
+import { ClipLoader } from 'react-spinners';
 async function verifyOTP(supabase, otp, phone)
 {
     console.log(phone) //debug
@@ -38,12 +39,14 @@ export default function VerifyForm(props)
     const setProcess = props.setProcess;
     //states
     const [otp, setOTP] = useState("");
+    const [isLoading, setIsLoading] = useState(0);
     //handlers
     const otpChangeHandler = (e)=>{
         setOTP(e.target.value)
     }
     const submitHandler = async (e)=>{
         e.preventDefault();
+        setIsLoading(1);
         const [status, data] = await verifyOTP(supabase, otp, phone);
         console.log(status, data); 
         if(status == "ok")
@@ -66,6 +69,7 @@ export default function VerifyForm(props)
         {
             // throw an error
         }
+        setIsLoading(0);
     }
     return(
         <div className="auth-card">
@@ -90,7 +94,7 @@ export default function VerifyForm(props)
                 onChange={otpChangeHandler}
                  />
                 </div>
-                 <button className="auth-form__submit" type='submit'>Verify code <span aria-hidden="true">→</span></button>
+                 <button className="auth-form__submit" type='submit' disabled={isLoading} aria-busy={Boolean(isLoading)}>{ isLoading? <><ClipLoader /><span>Checking code...</span></> : <span aria-hidden="true">Verify code →</span>}</button>
             </form>
             <p className="auth-card__note">The code expires shortly for your security.</p>
         </div>

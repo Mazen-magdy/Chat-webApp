@@ -16,7 +16,7 @@ export default function Enter()
 {
     //states
     const [process, setProcess] = useState(4); // 0 signin, 1 verify, 2 signup, 3 createAccount, 4 choose signIn/signUp
-    const [phone, setPhone] = useState("201016359580");
+    const [phone, setPhone] = useState("");
     const [operationType, setOperationType] = useState("");
     //handlers
     const operationHandler = (e)=>{

@@ -13,7 +13,7 @@ export default function Info({ infoSection }) {
   };
 
   return (
-    <section id="info" ref={infoSection}>
+    <section id="info" style={{display : "none"}} ref={infoSection}>
       <div className="info-container">
         <div className="info-header">
           <h2>Profile</h2>

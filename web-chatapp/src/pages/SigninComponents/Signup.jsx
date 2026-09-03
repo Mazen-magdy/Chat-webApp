@@ -2,7 +2,8 @@ import { useState, useContext } from "react";
 import { data } from "react-router-dom";
 //contexts
 import {supabaseClient} from '../../contexts'
-
+//libs
+import { ClipLoader } from "react-spinners";
 async function signUp(supabase, datain)
 {
     const { data, error } = await supabase.auth.signUp({
@@ -29,6 +30,7 @@ export default function Signup(props)
     const phone = props.phone;
     const setPhone = props.setPhone;
     //states
+    const [isLoading, setIsLoading] = useState(0);
     const [pass, setPass] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
@@ -41,6 +43,7 @@ export default function Signup(props)
     }
     const onSubmit = async(e)=>{
         e.preventDefault()
+        setIsLoading(1);
         setErrorMessage("");
         setSuccessMessage("");
 
@@ -53,15 +56,18 @@ export default function Signup(props)
 
         if (error) {
             setErrorMessage(error.message);
+            setIsLoading(0);
             return;
         }
 
         if (!authData.user) {
             setErrorMessage("Could not create the account. Please try again.");
+            setIsLoading(0);
             return;
         }
         setSuccessMessage("Account created. Check your phone for the verification code.");
         props.setProcess(1);
+        setIsLoading(0);
     }
     
     return(
@@ -81,7 +87,7 @@ export default function Signup(props)
                     <label htmlFor="phoneNumber">Phone number</label>
                     <input type="tel" name="phoneNumber" id="phoneNumber" value={phone} required placeholder="+201XXXXXXXXX" onChange={phoneChangeHandler}/>
                 </div>
-                <button className="auth-form__submit" type="submit">Create account <span aria-hidden="true">→</span></button>
+                <button className="auth-form__submit" type="submit" disabled={isLoading} aria-busy={Boolean(isLoading)}>{isLoading? <><ClipLoader /><span>Creating account...</span></> : <span aria-hidden="true">Create account →</span>}</button>
             </form>
             {errorMessage && <p className="errorMessage">{errorMessage}</p>}
             {successMessage && <p className="auth-card__success">{successMessage}</p>}

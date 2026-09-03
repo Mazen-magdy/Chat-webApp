@@ -23,10 +23,12 @@ export default function Footer()
     const uData = useContext(userData);
     const supabase = useContext(supabaseClient);
     const [message, setMessage] = useState("");
+    const [isSending, setIsSending] = useState(0);
     console.log(threadData)
     const sendMessageHandler = async (event) =>{
         if(message == "")
         {return }
+        setIsSending(1);
         const error = await sendMessage(supabase, message, threadData.id, uData.user_id);
         if(!error)
         {
@@ -35,12 +37,14 @@ export default function Footer()
         else{
             //error notification
         }
+        setIsSending(0);
     }
     return(
-        <div className='footer'>
-                <img src={plusIcon} alt="plus" />
-                <textarea placeholder='write your message' value={message} onChange={(e) => setMessage(e.target.value)}></textarea>
-                <img src={sendIcon} alt="send" onClick={sendMessageHandler} />
+        <div className='footer' aria-busy={Boolean(isSending)}>
+                <img src={plusIcon} alt="Add attachment" />
+            <textarea aria-label="Message" placeholder='Write a message...' value={message} onChange={(e) => setMessage(e.target.value)}></textarea>
+            {isSending ? <span className="send-status" role="status">Sending...</span> : null}
+            <img src={sendIcon} alt={isSending ? "Sending message" : "Send message"} onClick={sendMessageHandler} />
         </div>
     )
 }

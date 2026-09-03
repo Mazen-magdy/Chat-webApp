@@ -1,9 +1,10 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 //contexts
 import {supabaseClient} from '../../contexts'
 //styles
 import "../signin.css"
-
+//libs
+import {ClipLoader} from "react-spinners"
 async function signInHandler(supabase, phoneNumber, setProcess)
 {
     console.log(phoneNumber); // debug
@@ -24,8 +25,11 @@ export default function PhoneForm(props)
     const setPhone = props.setPhone;
     //states
     const [error, setError] = useState(0);
+    const [isLoading, setIsLoading] = useState(0);
     //contexts
     const supabase = useContext(supabaseClient);
+    //ref
+    const LoginErr = useRef(null);
     //handlers
     const phoneClickHandler = (e)=>{
         console.log(e)
@@ -33,13 +37,16 @@ export default function PhoneForm(props)
     }
     const onSubmitHandler = async (e)=>{
         e.preventDefault();
+        setIsLoading(1);
+        setError(null);
         const {data, error} = await signInHandler(supabase, phone, setProcess);
         console.log(data, error) // debug
 
         // state handler
         if(error)
         {
-        console.log(error);
+         console.log(error);
+         setError(error)
         }
         else
         {
@@ -51,6 +58,7 @@ export default function PhoneForm(props)
                 setProcess(1); // go for verifying
             }
         }
+        setIsLoading(0);
     }
     return(
             <div className="auth-card">
@@ -60,13 +68,13 @@ export default function PhoneForm(props)
                     <h1>Sign in to your account</h1>
                     <p>Enter your phone number and we’ll send you a secure verification code.</p>
                 </div>
-                {Boolean(error) && <p className="errorMessage">Not found</p>}
+                {Boolean(error) && <p className="errorMessage" role="alert">Invalid Input Number</p>}
                 <form action="#" onSubmit={onSubmitHandler} className="auth-form sign">
                     <div className="auth-form__field">
                         <label htmlFor="phoneNumber" >Phone number</label>
-                        <input type="tel" name="phoneNumber" id="phoneNumber" onChange={phoneClickHandler} value = {phone} placeholder="+20 101 635 9580" />
+                        <input type="tel" name="phoneNumber" id="phoneNumber" onChange={phoneClickHandler} value = {phone} placeholder="+xx xxxxxxxxxx" />
                     </div>
-                    <button className="auth-form__submit" type="submit">Continue <span aria-hidden="true">→</span></button>
+                    <button className="auth-form__submit" type="submit" disabled={isLoading} aria-busy={Boolean(isLoading)}>{(isLoading)? <><ClipLoader /><span>Sending code...</span></> : <span aria-hidden="true">Continue →</span>}</button>
                 </form>
                 <p className="auth-card__note">We’ll only use this to keep your account secure.</p>
             </div>

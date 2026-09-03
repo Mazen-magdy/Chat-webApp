@@ -11,6 +11,9 @@ import {chatbuf, screenSt, ThreadData, backBut, supabaseClient, userData, Thread
 // styles
 import './dashboard.css';
 
+//libs
+import { ClipLoader } from 'react-spinners';
+
 //Custom Hooks
 import useScreenState from "../hooks/useScreenState";
 
@@ -32,6 +35,7 @@ export default function Dashboard(){
     
      ]
     // responsive variable the determines which component to render
+    const [isLoading, setIsloading] = useState(0);
     const [screenState, setScreenState] = useState(0);
     const [threadData, setThreadData] = useState({});
     const [threadInfo, setThreadInfo] = useState({});
@@ -41,6 +45,7 @@ export default function Dashboard(){
     var chat = useRef(null);
     var info = useRef(null);
     var backbtn = useRef(null);
+    
     useScreenState(contact, chat, info, backbtn, screenState);
     
     // socket supabase
@@ -70,6 +75,7 @@ export default function Dashboard(){
     useEffect(()=>{
 
         async function getData() {
+            setIsloading(1);
             const id =  localStorage.getItem("id");
             const { data, error } = await supabase
             .from('user')
@@ -82,16 +88,7 @@ export default function Dashboard(){
                 `)
             .eq('user_id',id)
             .single();
-            
             console.log(data, error);
-            const { data: friends, error: friendError } = await supabase
-            .from("user")
-            .select("user_id, name, phoneNumber, imageUrl")
-            .in("user_id", data.friends);
-            console.log(friendError);
-            
-            data.friends = friends;
-            console.log(data);
             if(error)
             {
                 if(error.details = "The result contains 0 rows")
@@ -100,8 +97,21 @@ export default function Dashboard(){
                 }
             }
             else{
+                const { data: friends, error: friendError } = await supabase
+                .from("user")
+                .select("user_id, name, phoneNumber, imageUrl")
+                .in("user_id", data.friends);
+                if(friendError)
+                {       
+                    console.log(friendError);
+                    // render the error handler
+                }
+                data.friends = friends;
+                console.log(data);
+
                 setUserInfo(data);
             }
+         setIsloading(0);
         }
     getData()
     },[])
@@ -118,8 +128,16 @@ export default function Dashboard(){
         <ThreadInfo.Provider value={[threadInfo, setThreadInfo]}>
         <GetPerson.Provider value={getPerson}>
         <editYourInfo.Provider value={info}>
-
-            <div id="dashboard">
+            { isLoading ? <div className="dashboard-loading" role="status" aria-label="Loading your workspace"><ClipLoader
+            size = "100"
+            cssOverride={{
+                margin: "auto",
+                position : 'absolute',
+                top: "50%",
+                left: "50%",
+                translate: "-50% -50%",
+            }}
+            /><span>Preparing your workspace...</span></div>: <div id="dashboard">
                 <screenSt.Provider value={{screenState, setScreenState}}>
                 <backBut.Provider value={backbtn}>
                     <div id="container">
@@ -129,7 +147,8 @@ export default function Dashboard(){
                     </div>
                 </backBut.Provider>
                 </screenSt.Provider>
-            </div>
+            </div>}
+            
         </editYourInfo.Provider>
         </GetPerson.Provider>    
         </ThreadInfo.Provider>

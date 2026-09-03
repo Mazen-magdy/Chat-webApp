@@ -1,4 +1,4 @@
-import {useContext, useEffect} from 'react';
+import {useContext, useEffect, useRef, useState} from 'react';
 
 import {chatbuf, userData, supabaseClient, ThreadData, GetPerson} from '../../../contexts';
 
@@ -42,11 +42,16 @@ async function getChatHistory(supabase, threadId, setChatBuf, getPerson)
 
 export default function Body()
 {
+    //states
+    const [isLoadingHistory, setIsLoadingHistory] = useState(0);
+    //contexts
     const [chatBuf, setChatBuf] = useContext(chatbuf);
     const [threadData, setThreadData] = useContext(ThreadData);
     const getPerson = useContext(GetPerson);
     const userInfo= useContext(userData);
     const supabase= useContext(supabaseClient);
+    //ref
+    const chatBody = useRef(null);
     console.log(chatBuf)
     //* render the chat history and add any new listened value 
     console.log(chatBuf[0], userInfo)
@@ -57,21 +62,34 @@ export default function Body()
         }
 
         console.log("running getChatHistory for thread", threadData.id);
-        getChatHistory(supabase, threadData.id, setChatBuf, getPerson);
+        setIsLoadingHistory(1);
+        getChatHistory(supabase, threadData.id, setChatBuf, getPerson).finally(() => setIsLoadingHistory(0));
     }, [supabase, threadData?.id])
+
+    useEffect(() => {
+        if (isLoadingHistory || !chatBody.current) {
+            return;
+        }
+
+        const frame = requestAnimationFrame(() => {
+            chatBody.current.scrollTop = chatBody.current.scrollHeight;
+        });
+
+        return () => cancelAnimationFrame(frame);
+    }, [chatBuf, isLoadingHistory]);
     return(
 
-        <div className='body'>
+        <div className='body' ref={chatBody}>
                 {
-                    chatBuf.map((content, index) => {
+                    isLoadingHistory ? <div className="chat-empty" role="status"><span className="state-spinner" aria-hidden="true" /><span>Loading messages...</span></div> : chatBuf.length ? chatBuf.map((content, index) => {
                         return (
                             <div key={index} className={`message ${ content?.created_by?.user_id == userInfo?.user_id ? "reciever": "sender"}`}>
-                                <p className='information'>{content.payload}</p>
+                                <p className='information'>{content.payload || "Message unavailable"}</p>
                                 <p className='time'>{dateExtractor(content.created_at)}</p>
                                 <p className='status disabled'></p>
                             </div>
                         );
-                    })
+                    }) : <div className="chat-empty"><strong>No messages yet</strong><span>Send a message to start the conversation.</span></div>
                 }
             </div>
     )

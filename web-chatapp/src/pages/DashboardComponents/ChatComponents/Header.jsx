@@ -23,13 +23,13 @@ export default function Header()
     console.log(threadInfo)
     return(
           <div className='header'>
-                <img src={leftArrow} ref={backButton} onClick={backToContactsHandler} className='backbtn'></img>
+                <img src={leftArrow} ref={backButton} onClick={backToContactsHandler} className='backbtn' alt='Back to contacts'></img>
                 <h1 className='name'>
-                    {threadInfo?.name}
+                    {threadInfo?.name || "Choose a conversation"}
                 </h1>
                 <div className='icons'>
-                    <img src={searchIcon} alt="search" />
-                    <img src={infoIcon} alt="info" onClick={profileviewHandler}/>
+                    <img src={searchIcon} alt="Search messages" />
+                    <img src={infoIcon} alt="Conversation info" onClick={profileviewHandler}/>
                 </div>
             </div>
     )

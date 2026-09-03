@@ -1,8 +1,9 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useRef } from "react";
 import { data, useNavigate } from "react-router-dom";
 //contexts
 import {supabaseClient} from '../../contexts'
-
+//libs
+import { ClipLoader, ClockLoader } from "react-spinners";
 
 async function createAcc(supabase, datain)
 {
@@ -20,7 +21,7 @@ async function createAcc(supabase, datain)
         // fetch url
     const { data: profileImageData } = supabase
     .storage
-    .from('your-bucket-name')
+    .from('ProfileImages')
     .getPublicUrl(filePath);
     const imageUrl = profileImageData.publicUrl;
     // create the Account
@@ -43,9 +44,12 @@ export default function CreateAccount(props){
     //contexts
     const supabase = useContext(supabaseClient)
     //states
+    const [isLoading, setIsLoading] = useState(0);
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [profile_img, setProfile_img] = useState(null);
+    //ref
+    const creatAcc_err = useRef(null);
     //handlers
     const nameChangeHandler = (e)=>{
         setName(e.target.value);
@@ -59,6 +63,7 @@ export default function CreateAccount(props){
     }
     const submission = async (e)=>{
         e.preventDefault();
+        setIsLoading(1);
          const data = {
             id : localStorage.getItem("id"),
             name : name,
@@ -66,16 +71,19 @@ export default function CreateAccount(props){
             phone : props.phone,
             profile : profile_img
         }
-        const status = await createAcc(supabase, data);
+        const {error:status} = await createAcc(supabase, data);
         if(!status)
         {
            
             navigate('../dashboard')
         }
         else{
-            // througth an error
+            console.log(creatAcc_err.current)
+            creatAcc_err.current.value = status;
+            creatAcc_err.current.classList.remove("disabled");
         }
         console.log(status); // debug
+        setIsLoading(0);
     }
     return(
         <div className="auth-card">
@@ -83,6 +91,7 @@ export default function CreateAccount(props){
             <div className="auth-card__heading">
                 <p className="auth-card__eyebrow">Almost there</p>
                 <h1>Complete your profile</h1>
+                <h3 className="errorMes disabled" ref={creatAcc_err} role="alert">Error</h3>
                 <p>Add a few details so your friends can recognize you.</p>
             </div>
             <form action="" onSubmit={submission} className="auth-form">
@@ -98,7 +107,7 @@ export default function CreateAccount(props){
                     <label htmlFor="profileImg" value={profile_img} >Profile picture</label>
                     <input className="auth-form__file" type="file" name="profile_img" id="profileImg" onChange={profileChangeHandler}/>
                 </div>
-                <button className="auth-form__submit" type="submit">Finish setup <span aria-hidden="true">→</span></button>
+                <button className="auth-form__submit" type="submit" disabled={isLoading} aria-busy={Boolean(isLoading)}>{ isLoading? <><ClipLoader /><span>Saving profile...</span></>:<span aria-hidden="true">Finish setup →</span>}</button>
             </form>
         </div>
     )

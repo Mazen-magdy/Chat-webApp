@@ -23,12 +23,12 @@ export default function YourInfo()
 
     return(
         <section id="yourInfo">
-            <img src={userInfo.imageUrl} id="profile" />
+            {userInfo.imageUrl ? <img src={userInfo.imageUrl} id="profile" alt="Your profile" /> : <div id="profile" className="avatar-fallback" aria-hidden="true">{userInfo.name?.charAt(0)?.toUpperCase() || "?"}</div>}
             <div id="content">
-                <h2>{userInfo.name}</h2>
+                <h2>{userInfo.name || "Your profile"}</h2>
                 {/* <p> {userInfo.bio} </p> */}
             </div>
-            <img className="icons" src={edit} id="edit" onClick={handleMenuClick}/>
+            <img className="icons" src={edit} id="edit" alt="Edit profile" onClick={handleMenuClick}/>
         </section>
     )
 }
