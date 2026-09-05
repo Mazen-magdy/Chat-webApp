@@ -52,15 +52,15 @@ export default function Chat({ chat }) {
     //states
     const [isLoading, setIsLoading] = useState(0);
     console.log(userInfo)
-    useEffect(()=>{
-        (async function() {
-            setIsLoading(1);
-            const threadInf = await getThreadInfo(supabase, threadData, userInfo, getPerson);
-            console.log(threadInf)
-            setThreadInfo(threadInf);
-            setIsLoading(0);
-        })()
-    }, [supabase, threadData, userInfo, getPerson, setThreadInfo])
+    // useEffect(()=>{
+    //     (async function() {
+    //         setIsLoading(1);
+    //         const threadInf = await getThreadInfo(supabase, threadData, userInfo, getPerson);
+    //         console.log(threadInf)
+    //         setThreadInfo(threadInf);
+    //         setIsLoading(0);
+    //     })()
+    // }, [supabase, threadData, userInfo, getPerson, setThreadInfo])
     console.log("chat render")
     return (
         <section id="chat" ref={chat}>

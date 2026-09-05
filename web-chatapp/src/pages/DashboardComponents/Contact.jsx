@@ -9,84 +9,14 @@ import {screenSt, ThreadData, userData, supabaseClient} from "../../contexts";
 // Components
 import YourInfo from "./ContactComponents/YourInfo";
 
+// hooks
+import {  getThread, getThreadFriend, getThreadGroup, createSearhHandler, createChatSelectHandler } from '../../hooks/contacts';
+
 // utils
 import searchIcon from '../../utilities/search.svg';
 import User1 from '../../utilities/user1.jpg';
 import ContactListItem from './ContactListItem';
 import { data } from 'react-router-dom';
-
-
-async function searchForUser(supabase, phone, friends){
-  
-  let friend = []
-  friend =friends.find((friend) => friend.phoneNumber == phone)
-  console.log(phone, friend);
-  if(friend)
-  {
-    return {data : [friend], error : undefined};
-  }
-  else
-  {
-    if(phone.length < 10)
-    {
-      return {data : [], error : undefined};
-    }
-    const { data, error } = await supabase
-    .from('user')
-    .select(`*`)
-    .eq('phoneNumber', phone)
-    console.log(data, error);
-    return {data: data || [], error};  
-  }
-
-}
-
-async function getThreadFriend(supabase, keys)
-{
-  console.log(keys)
-  const { data, error } = await supabase
-  .from('threads')
-  .select('*')
-  .eq('Type', "DM")
-  .contains("Members", keys);
-  console.log(data, error);
-  if(!data)
-  {
-    console.log("new Thread")
-    const{error:creationError} = await supabase
-    .from('threads')
-    .insert(
-      {
-        created_by : keys[0],
-        Type : "DM",
-        Members: keys
-      }
-    )
-    const { data, error } = await supabase
-    .from('threads')
-    .select('*')
-    .eq('Type', "DM")
-    .contains("Members", keys);
-    console.log(data, error);
-    return {data, error};
-  }
-  else
-  {
-    return {data, error};
-  }
-}
-
-async function getThreadGroup(supabase, keys)
-{
-  console.log(keys)
-  const { data, error } = await supabase
-  .from('threads')
-  .select('*')
-  .eq('Type', "Group")
-  .eq("id", keys);
-  console.log(data, error);
-  return {data, error};
-}
 
 
 
@@ -97,12 +27,11 @@ export default function Contact(props) {
   const [isLoadingSearch, setIsLoadingSearch] = useState(0);
   const [isLoadingChat, setIsLoadingChat] = useState(0);
   const [searchResults, setSearchResult] = useState(0);
-  const [contacts, setContacts] = useState([]);
+  const [threads, setThreads] = useState([]);
   const [isInitialized, setIsInitialized] = useState(false);
   // ref
   let contactsRef = useRef([
   ]);
-  // var contacts = contactsRef.current
   // context variables
   const {screenState, setScreenState} = useContext(screenSt);
   const [threadData, setThreadData] = useContext(ThreadData);
@@ -113,7 +42,7 @@ export default function Contact(props) {
     // Only initialize contacts on first load
     if(!isInitialized && userInfo && userInfo.friends)
     {
-      setContacts(userInfo.friends);
+      if(userInfo.Threads[0] != null) setThreads(userInfo.Threads);
       setIsInitialized(true);
     }
   },[userInfo, isInitialized])
@@ -127,107 +56,9 @@ export default function Contact(props) {
   } = useContactPanel(contactSection);
   
   // actions
-  const handleSearch = async (event) => {
-    setIsLoadingSearch(1);
-    setSearchState(event.target.value);
-    console.log(event.target.value)
-    if(event.target.value == "")
-    {setContacts(userInfo.friends);}
+  const handleSearch =  createSearhHandler(supabase, userInfo, setSearchResult, setIsLoadingSearch, setSearchState, setThreads) //! there is an unexpected rerender inspect it and continue search process
 
-    var {data:res, error:err} = await searchForUser(supabase, '2'+event.target.value,userInfo.friends);
-    console.log(res, err);
-    if(err)
-    {
-      console.log("Search error:", err);
-      setContacts([]);
-      setIsLoadingSearch(0);
-      return;
-    }
-    if(res == undefined || !Array.isArray(res) || res.length == 0)
-      {setContacts([])}
-    else
-    {
-      setContacts([...res]);
-    }
-    console.log(res)
-    setSearchResult(0); 
-    setIsLoadingSearch(0);
-  }; //! there is an unexpected rerender inspect it and continue search process
-    const handleUnfocus = (e)=>{
-      // // contacts = userInfo.friends;
-      // console.log("unfocused")
-      // console.log(userInfo.friends)
-      // setSearchResult(1);
-    }
-  const handleChatSelect = async (event) =>{
-    setIsLoadingChat(1);
-    console.log(event.target)
-    // try to get the thread with the target id if found this is a group else construct keys and get the DM
-    if(threadData != null )
-    {
-      if( threadData.id == event.target.id)
-      {
-        console.log("abort")
-        setScreenState(1);
-        setIsLoadingChat(0);
-        return
-      }
-    }
-    else if(event.target.id == "")
-    {
-      console.log("abort")
-      setIsLoadingChat(0);
-      return
-    }
-    const {data:thread, error} = await getThreadGroup(supabase, event.target.id);
-    console.log(thread, error);
-    
-    // Handle error case
-    if(error)
-    {
-      console.log("Error fetching thread:", error);
-      // Thread doesn't exist, create DM
-      let keys = [userInfo.user_id, event.target.id]; // for DM
-      const {data: threadFriend, error: errorFriend} = await getThreadFriend(supabase, keys);
-      console.log(threadFriend);
-      if(threadFriend && threadFriend.length > 0)
-      {
-        setThreadData(threadFriend[0]);
-      }
-     
-      setScreenState(1);
-      setIsLoadingChat(0);
-      return;
-    }
-    
-    if(thread && thread.length == 0)
-    {
-      console.log("DM")
-      console.log(threadData)
-      if(threadData?.Members != undefined)
-      {
-        if(threadData.Members.includes(userInfo.user_id, event.target.id))
-        {
-          console.log("already exists")
-          setScreenState(1);
-          setIsLoadingChat(0);
-          return
-        }
-      }
-      let keys = [userInfo.user_id, event.target.id]; // for DM
-      const {data: threadFriend, error: errorFriend} = await getThreadFriend(supabase, keys);
-      console.log(threadFriend);
-      if(threadFriend && threadFriend.length > 0)
-      {
-        setThreadData(threadFriend[0]);
-      }
-    }
-    else if(thread && thread.length > 0){
-      setThreadData(thread[0]);
-    }
-    setScreenState(1);
-    setIsLoadingChat(0);
-  };
+  const handleChatSelect = createChatSelectHandler(supabase, userInfo, threads, threadData, setIsLoadingChat, setScreenState, setThreadData);
   
   return (
     <section id="contacts" ref={contactSection} > 
@@ -242,19 +73,17 @@ export default function Contact(props) {
           aria-label="Search contacts by phone number"
           value={searchState}
           onChange={handleSearch}
-          onBlur = {handleUnfocus}
         />
       </div>
       {isLoadingChat ? <div className="selection-loading" role="status"><span className="state-spinner" aria-hidden="true" />Opening conversation...</div> : null}
       <div className="chats">
-        {!isInitialized ? <div className="state-message" role="status"><span className="state-spinner" aria-hidden="true" />Loading your contacts...</div> : contacts.length? contacts.map((contact) => (
+        {!isInitialized ? <div className="state-message" role="status"><span className="state-spinner" aria-hidden="true" />Loading your contacts...</div> : threads?.length? threads.map((thread) => (
           <ContactListItem
-            key={contact.user_id}
-            id = {null}
-            keys={contact.user_id}
-            name={contact.name || "Unnamed contact"}
-            lastMessage={contact.lastMessage || "Start a conversation"}
-            avatar={contact.imageUrl}
+            id = {thread?.user_id? 0 :thread.id}
+            user_id = {(thread?.user_id)? thread.user_id : ""}
+            name={thread.name || "Unnamed contact"}
+            lastMessage={thread.lastMessage || "Start a conversation"}
+            avatar={thread.imageUrl}
             clickHandler={handleChatSelect}
           />
         )) : <div className="state-message">{isLoadingSearch ? <><span className="state-spinner" aria-hidden="true" />Searching contacts...</> : "No contacts yet"}</div>}

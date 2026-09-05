@@ -1,6 +1,6 @@
 import {useContext} from 'react';
 //contexts
-import {chatbuf, screenSt, backBut, ThreadInfo} from '../../../contexts';
+import {chatbuf, screenSt, backBut, ThreadData} from '../../../contexts';
 
 //utils
 import searchIcon from '../../../utilities/search.svg';
@@ -13,19 +13,19 @@ export default function Header()
     // contexts
     let chatBuffer =  useContext(chatbuf);
     let backButton = useContext(backBut);
-    const [threadInfo, setThreadInfo] = useContext(ThreadInfo);
+    const [threadData, setThreadData] = useContext(ThreadData);
     const profileviewHandler = (event)=>{
         setScreenState(2);
     }
     const backToContactsHandler = ()=>{
         setScreenState(0);
     }
-    console.log(threadInfo)
+    console.log(threadData)
     return(
           <div className='header'>
                 <img src={leftArrow} ref={backButton} onClick={backToContactsHandler} className='backbtn' alt='Back to contacts'></img>
                 <h1 className='name'>
-                    {threadInfo?.name || "Choose a conversation"}
+                    {threadData?.name || "Choose a conversation"}
                 </h1>
                 <div className='icons'>
                     <img src={searchIcon} alt="Search messages" />

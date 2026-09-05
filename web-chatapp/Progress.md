@@ -20,3 +20,8 @@ Next step: add you info into contacts section, add the contact's info section
     Current Status: remaining add the contact's info section and its logic - *delayed*
 
 - Construct the state flow from sign in to dashboard fetch data then live chat  *DONE*
+
+
+
+- now you have to write the flow of operations before you continue   DONE
+- now you are making the search sub-system and debugging it

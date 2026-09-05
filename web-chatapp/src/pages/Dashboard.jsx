@@ -84,7 +84,8 @@ export default function Dashboard(){
                 name,
                 phoneNumber,
                 imageUrl,
-                friends 
+                friends,
+                Threads
                 `)
             .eq('user_id',id)
             .single();
@@ -97,16 +98,16 @@ export default function Dashboard(){
                 }
             }
             else{
-                const { data: friends, error: friendError } = await supabase
-                .from("user")
-                .select("user_id, name, phoneNumber, imageUrl")
-                .in("user_id", data.friends);
-                if(friendError)
+                const { data: Threads, error: ThreadsError } = await supabase
+                .from("threads")
+                .select("Type, Members, Admins")
+                .in("id", data.threads);
+                if(ThreadsError)
                 {       
-                    console.log(friendError);
+                    console.log(ThreadsError);
                     // render the error handler
                 }
-                data.friends = friends;
+                data.Threads = Threads;
                 console.log(data);
 
                 setUserInfo(data);
