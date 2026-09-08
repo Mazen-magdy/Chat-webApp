@@ -29,7 +29,7 @@ export default function YourInfo()
     }
     return(
         <section id="yourInfo">
-            {userInfo.imageUrl ? <img src={userInfo.imageUrl} id="profile" alt="Your profile" onClick={handleImgMagnify} /> : <div id="profile" className="avatar-fallback" aria-hidden="true">{userInfo.name?.charAt(0)?.toUpperCase() || "?"}</div>}
+            {userInfo.imageUrl ? <img src={userInfo.imageUrl} id="profile" className="profile-avatar" alt="Your profile" onClick={handleImgMagnify} /> : <div id="profile" className="avatar-fallback profile-avatar" aria-hidden="true">{userInfo.name?.charAt(0)?.toUpperCase() || "?"}</div>}
             <div id="content">
                 <h2>{userInfo.name || "Your profile"}</h2>
                 {/* <p> {userInfo.bio} </p> */}

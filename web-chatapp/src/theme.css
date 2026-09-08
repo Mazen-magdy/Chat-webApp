@@ -1,14 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 :root{
-  --default-color: #166FF6;
-  --primary-color: #002DE3;
-  --secondary-color:#D2D5F9;
-  --nutral1-color:#EDEDED;
-  --nutral2-color:#F7F7FC;
+  --default-color: #356ae6;
+  --primary-color: #2454c6;
+  --secondary-color: #dce7ff;
+  --accent-color: #f27d68;
+  --nutral1-color: #e4e9f2;
+  --nutral2-color: #f4f7fb;
   --background: #ffffff;
-  --text-color:#0F1828;
-  --text-disabled:#ADB5BD;
+  --text-color: #142238;
+  --text-disabled: #748197;
+  --focus-ring: rgba(53, 106, 230, .25);
+  --shadow-soft: 0 10px 30px rgba(20, 34, 56, .08);
 }
 
 html, body, #root {
@@ -25,8 +28,24 @@ html, body, #root {
 }
 
 body{
-  font-family: mulish;
+  font-family: "Manrope", sans-serif;
   min-height: 100%;
+  background: var(--nutral2-color);
+}
+
+button, input, textarea{ font: inherit; }
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible{
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+::selection{
+  color: var(--background);
+  background: var(--default-color);
 }
 
 .disabled{

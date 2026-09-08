@@ -9,7 +9,6 @@ import Enter from './pages/Enter';
 import './theme.css';
 import {supabaseClient} from './contexts';
 
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 
@@ -30,7 +29,6 @@ root.render(
         <Route path="/enter" element={<Enter />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
-      
       </BrowserRouter>
     </supabaseClient.Provider>
   </React.StrictMode>

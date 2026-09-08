@@ -11,7 +11,7 @@ function filterUsers(id, users, buffer){
   console.log(users);
     let filteredusers = users.filter((user)=>{
       return !buffer.some((thread)=>{
-        if(thread.Members.toString() == [id, user.user_id].toString() || thread.Members.toString() == [user.user_id, id].toString() )
+        if(thread?.Members?.toString() == [id, user.user_id].toString() || thread?.Members?.toString() == [user.user_id, id].toString() )
         {
               return true;
         }

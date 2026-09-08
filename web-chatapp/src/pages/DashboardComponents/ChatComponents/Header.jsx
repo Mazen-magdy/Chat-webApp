@@ -41,7 +41,7 @@ export default function Header()
     return(
           <div className='header'>
                 <img src={leftArrow} ref={backButton} onClick={backToContactsHandler} className='backbtn' alt='Back to contacts'></img>
-                <img src={threadData?.imageUrl} onClick={handleImgMagnify} style={{height: '80%', borderRadius: '10px'}}/>
+                <img className='thread-avatar' src={threadData?.imageUrl} onClick={handleImgMagnify} alt="Conversation avatar" />
                 <h1 className='name'>
                     {threadData?.name || "Choose a conversation"}
                 </h1>
