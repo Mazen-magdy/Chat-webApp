@@ -24,4 +24,5 @@ Next step: add you info into contacts section, add the contact's info section
 
 
 - now you have to write the flow of operations before you continue   DONE
-- now you are making the search sub-system and debugging it
+- now you are making the search sub-system and debugging it DONE
+- now you are inspecting why from other account it fetchs repeated threads - this is a problem in the postgres func as it returns doublcated threads

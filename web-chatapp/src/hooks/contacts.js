@@ -1,3 +1,5 @@
+import useScreenState from "./useScreenState";
+
 function searchForThreadsInside(userInfo, payload){
     return userInfo.Threads.map((thread)=>{
         if(thread.name == payload)
@@ -129,6 +131,7 @@ const  createSearhHandler =  (supabase, userInfo, setSearchResult, setIsLoadingS
   
     const {data, error} = await supabase
     .rpc('search_threads', { search_query: event.target.value });
+
     console.log(data, error)
     threadsBuffer.push(...data);
     let {data:users, errror:userError} = await searchInsideUsers(supabase, event.target.value);
@@ -143,7 +146,7 @@ const  createSearhHandler =  (supabase, userInfo, setSearchResult, setIsLoadingS
     setIsLoadingSearch(0);
 }
 
-const createChatSelectHandler = (supabase, userInfo, threads, threadData, setIsLoadingChat, setScreenState, setThreadData)=> async(event)=>{
+const createChatSelectHandler = (supabase, userInfo, threads, threadData, setIsLoadingChat, screenState, setScreenState, setThreadData)=> async(event)=>{
   setIsLoadingChat(1);
   let thread;
   if(event.target.id == 0)
@@ -170,7 +173,7 @@ const createChatSelectHandler = (supabase, userInfo, threads, threadData, setIsL
     thread = threads.find((thread)=> thread.id == event.target.id)
   }
   setThreadData(thread);
-  setScreenState(1);
+  setScreenState([1, screenState[0]]);
   setIsLoadingChat(0);
 }
 

@@ -1,53 +1,34 @@
 import { useContext } from "react";
-import { userData, screenSt } from "../../contexts";
+import { userData, screenSt, InfoState, InfoRef } from "../../contexts";
+import Edit from "./InfoComponents/Edit"
+import ThreadInfo from "./InfoComponents/ThreadInfo"
+import InfoHead from "./InfoComponents/InfoHead"
 
-import closeIcon from "../../utilities/leftArrow.svg";
 
-export default function Info({ infoSection }) {
-  const userInfo = useContext(userData);
+export default function Info() {
+  const [userInfo, setUserInfo] = useContext(userData);
+  const inforef = useContext(InfoRef);
   const { screenState, setScreenState } = useContext(screenSt);
-
-  const handleClose = () => {
-    infoSection.current.style.display = 'none';
-    setScreenState(0); // Go back to contacts
-  };
-
+  const [infoState, setInfoState] = useContext(InfoState);
   return (
-    <section id="info" style={{display : "none"}} ref={infoSection}>
-      <div className="info-container">
-        <div className="info-header">
-          <h2>Profile</h2>
-          <img
-            src={closeIcon}
-            alt="close"
-            className="close-btn"
-            onClick={handleClose}
-          />
+      <section id="info"  ref = {inforef}>
+        <div className="info-container">
+        
+        <InfoHead
+            inforef = {inforef}
+            screenState={screenState} 
+            setScreenState={setScreenState} />
+        {
+          {
+            0: <></>,
+            1: <Edit
+            userInfo={userInfo}
+            setUserInfo = {setUserInfo} />,
+            2: <ThreadInfo />
+          }[infoState]  
+        }
+        
         </div>
-
-        <div className="info-content">
-          <div className="profile-image">
-            <img src={userInfo?.imageUrl} alt="profile" />
-          </div>
-
-          <div className="info-details">
-            <div className="info-item">
-              <label>Name</label>
-              <p>{userInfo?.name}</p>
-            </div>
-
-            <div className="info-item">
-              <label>Phone</label>
-              <p>{userInfo?.phoneNumber}</p>
-            </div>
-
-            <div className="info-item">
-              <label>Email</label>
-              <p>{userInfo?.email || "Not provided"}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+      </ section>
   );
 }

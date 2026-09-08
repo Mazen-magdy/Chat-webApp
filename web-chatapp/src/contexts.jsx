@@ -17,5 +17,7 @@ export const ThreadInfo = createContext(null); // provided inside dashboard
 
 export const GetPerson = createContext(null); // provided inside dashboard
 
-export const editYourInfo = createContext(null); // provided inside dashboard
+export const InfoState = createContext(null); // provided inside dashboard
+
+export const InfoRef = createContext(null); // provided inside dashboard
     

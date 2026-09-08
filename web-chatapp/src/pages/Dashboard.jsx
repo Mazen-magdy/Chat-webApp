@@ -6,7 +6,7 @@ import Chat from './DashboardComponents/Chat';
 import Contact from "./DashboardComponents/Contact";
 import Info from "./DashboardComponents/Info";
 // conexts
-import {chatbuf, screenSt, ThreadData, backBut, supabaseClient, userData, ThreadInfo, GetPerson, editYourInfo} from '../contexts';
+import {chatbuf, screenSt, ThreadData, backBut, supabaseClient, userData, InfoRef, ThreadInfo, GetPerson, InfoState} from '../contexts';
 
 // styles
 import './dashboard.css';
@@ -36,17 +36,19 @@ export default function Dashboard(){
      ]
     // responsive variable the determines which component to render
     const [isLoading, setIsloading] = useState(0);
-    const [screenState, setScreenState] = useState(0);
+    const [screenState, setScreenState] = useState([0,0]);
     const [threadData, setThreadData] = useState({});
     const [threadInfo, setThreadInfo] = useState({});
     const [userInfo, setUserInfo] = useState(null);
     const [chatBuf, setChatBuf] = useState(chatBuffer);
+    const [infoState, setInfoState] = useState(0);
+
     var contact = useRef(null);
     var chat = useRef(null);
     var info = useRef(null);
     var backbtn = useRef(null);
-    
-    useScreenState(contact, chat, info, backbtn, screenState);
+    useScreenState(contact, chat, info, setInfoState, backbtn, screenState, isLoading);
+
     
     // socket supabase
     const supabase = useContext(supabaseClient);
@@ -94,7 +96,7 @@ export default function Dashboard(){
             {
                 if(error.details = "The result contains 0 rows")
                 {
-                    // navigate("../enter");
+                    navigate("../enter");
                 }
             }
             else{
@@ -118,17 +120,18 @@ export default function Dashboard(){
     },[])
 
     return(
-        <userData.Provider value={userInfo ?? {
+        <userData.Provider value={[userInfo ?? {
             user_id: "",
             imageUrl: "",
             name : ""
-        }}>
+        }, setUserInfo]}>
             
         <chatbuf.Provider value={[chatBuf, setChatBuf]} >
         <ThreadData.Provider value={[threadData, setThreadData]}>
         <ThreadInfo.Provider value={[threadInfo, setThreadInfo]}>
         <GetPerson.Provider value={getPerson}>
-        <editYourInfo.Provider value={info}>
+        <InfoState.Provider value={[infoState, setInfoState]}>
+        <InfoRef.Provider value = {info}>
             { isLoading ? <div className="dashboard-loading" role="status" aria-label="Loading your workspace"><ClipLoader
             size = "100"
             cssOverride={{
@@ -144,13 +147,14 @@ export default function Dashboard(){
                     <div id="container">
                         <Contact contactSection={contact}/>
                         <Chat  chat={chat}/>
-                        <Info infoSection={info}/>
+                        <Info />
                     </div>
                 </backBut.Provider>
                 </screenSt.Provider>
             </div>}
             
-        </editYourInfo.Provider>
+        </InfoRef.Provider>
+        </InfoState.Provider>
         </GetPerson.Provider>    
         </ThreadInfo.Provider>
         </ThreadData.Provider>

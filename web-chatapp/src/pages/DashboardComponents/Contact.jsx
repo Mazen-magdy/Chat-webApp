@@ -35,7 +35,7 @@ export default function Contact(props) {
   // context variables
   const {screenState, setScreenState} = useContext(screenSt);
   const [threadData, setThreadData] = useContext(ThreadData);
-  const userInfo = useContext(userData);
+  const [userInfo, setUserInfo] = useContext(userData);
   const supabase = useContext(supabaseClient);
   // handlers
   useEffect(()=>{
@@ -58,7 +58,7 @@ export default function Contact(props) {
   // actions
   const handleSearch =  createSearhHandler(supabase, userInfo, setSearchResult, setIsLoadingSearch, setSearchState, setThreads) //! there is an unexpected rerender inspect it and continue search process
 
-  const handleChatSelect = createChatSelectHandler(supabase, userInfo, threads, threadData, setIsLoadingChat, setScreenState, setThreadData);
+  const handleChatSelect = createChatSelectHandler(supabase, userInfo, threads, threadData, setIsLoadingChat, screenState, setScreenState, setThreadData);
   
   return (
     <section id="contacts" ref={contactSection} > 

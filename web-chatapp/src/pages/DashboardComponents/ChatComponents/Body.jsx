@@ -72,7 +72,8 @@ export default function Body()
         }
 
         const frame = requestAnimationFrame(() => {
-            chatBody.current.scrollTop = chatBody.current.scrollHeight;
+            if(chatBody?.current)
+            chatBody.current.scrollTop = chatBody?.current?.scrollHeight;
         });
 
         return () => cancelAnimationFrame(frame);
