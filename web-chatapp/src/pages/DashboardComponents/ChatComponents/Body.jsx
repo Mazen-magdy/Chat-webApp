@@ -48,7 +48,7 @@ export default function Body()
     const [chatBuf, setChatBuf] = useContext(chatbuf);
     const [threadData, setThreadData] = useContext(ThreadData);
     const getPerson = useContext(GetPerson);
-    const userInfo= useContext(userData);
+    const [userInfo]= useContext(userData);
     const supabase= useContext(supabaseClient);
     //ref
     const chatBody = useRef(null);

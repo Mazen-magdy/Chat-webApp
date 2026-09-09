@@ -31,7 +31,7 @@ export default function Signup(props)
     const setPhone = props.setPhone;
     //states
     const [isLoading, setIsLoading] = useState(0);
-    const [pass, setPass] = useState("");
+    const [pass, setPass] = useState("159753");
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     //handlers
@@ -79,10 +79,10 @@ export default function Signup(props)
                 <p>Set up your account in just a moment.</p>
             </div>
             <form action="" onSubmit={onSubmit} className="auth-form">
-                <div className="auth-form__field">
+                {/* <div className="auth-form__field">
                     <label htmlFor="password">Password</label>
                     <input type="password" name="password" id="password" value={pass} required minLength={6} placeholder="At least 6 characters" onChange={passChangeHandler}/>
-                </div>
+                </div> */}
                 <div className="auth-form__field">
                     <label htmlFor="phoneNumber">Phone number</label>
                     <input type="tel" name="phoneNumber" id="phoneNumber" value={phone} required placeholder="+201XXXXXXXXX" onChange={phoneChangeHandler}/>

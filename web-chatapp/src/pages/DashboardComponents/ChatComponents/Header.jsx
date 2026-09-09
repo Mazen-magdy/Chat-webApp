@@ -10,9 +10,11 @@ import leftArrow from   '../../../utilities/leftArrow.svg';
 
 export default function Header()
 {
+    const [searching, setSearching ] = useState(0);
     const [viewImgData, setViewImgData] = useState({state : 0, url : ""});
     const {screenState, setScreenState} = useContext(screenSt);
     // contexts
+    const [chatBuf, setChatBuf] = useContext(chatbuf);
     let chatBuffer =  useContext(chatbuf);
     let backButton = useContext(backBut);
     const [infoState, setInfoState] = useContext(InfoState);
@@ -37,6 +39,9 @@ export default function Header()
     const handleImgMagnify = (e) =>{
         setViewImgData({state : 1, url : e.target.getAttribute('src')});
     }
+    const chatSearchHandler  = (e) =>{
+            const payload = e.target.value;
+    }
     console.log(threadData)
     return(
           <div className='header'>
@@ -45,8 +50,14 @@ export default function Header()
                 <h1 className='name'>
                     {threadData?.name || "Choose a conversation"}
                 </h1>
-                <div className='icons'>
-                    <img src={searchIcon} alt="Search messages" />
+                <div className='icons' id='chatHeader'>
+                    {
+                        {
+                            0: <img src={searchIcon} alt="Search messages" onClick={(e) => {setSearching(1)}}/>,
+                            1: <input type='text' className=''  alt='search for a message' placeholder='Disabled'  onChange={chatSearchHandler} onBlur={(e)=> {setSearching(0)}} readOnly/>
+
+                        }[searching]
+                    }
                     <img src={infoIcon} alt="Conversation info" onClick={ThreadDetailsHandler}/>
                 </div>
                 <ImgViewer

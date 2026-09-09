@@ -6,22 +6,22 @@ function searchForThreadsInside(userInfo, payload){
             return thread;
     })
 }
-function filterUsers(id, users, buffer){
-  
-  console.log(users);
-    let filteredusers = users.filter((user)=>{
-      return !buffer.some((thread)=>{
-        if(thread?.Members?.toString() == [id, user.user_id].toString() || thread?.Members?.toString() == [user.user_id, id].toString() )
-        {
-              return true;
+function filterUsers(myId, users, threads) {
+  // Collect ids of everyone I already have a DM thread with
+  const existingPartnerIds = new Set();
+  existingPartnerIds.add(myId);
+  threads.forEach((thread) => {
+    if (thread?.Type === 'DM' && Array.isArray(thread?.Members)) {
+      thread.Members.forEach((member) => {
+        const memberId = member?.user_id;
+        if (memberId && memberId !== myId) {
+          existingPartnerIds.add(memberId);
         }
-        return false;
-      })
-    })
-    if(!filteredusers[0])
-    {filteredusers = []}
-    console.log(filteredusers);
-    return filteredusers;
+      });
+    }
+  });
+
+  return users.filter((user) => !existingPartnerIds.has(user.user_id));
 }
 async function searchForThreads(supabase, payload){
     const {data, error} = await supabase
@@ -134,7 +134,7 @@ const  createSearhHandler =  (supabase, userInfo, setSearchResult, setIsLoadingS
 
     console.log(data, error)
     threadsBuffer.push(...data);
-    let {data:users, errror:userError} = await searchInsideUsers(supabase, event.target.value);
+    let {data:users, error:userError} = await searchInsideUsers(supabase, event.target.value);
     users = filterUsers(userInfo.user_id, users, data);
     threadsBuffer.push(...users);
     console.log(threadsBuffer)
@@ -149,13 +149,16 @@ const  createSearhHandler =  (supabase, userInfo, setSearchResult, setIsLoadingS
 const createChatSelectHandler = (supabase, userInfo, threads, threadData, setIsLoadingChat, screenState, setScreenState, setThreadData)=> async(event)=>{
   setIsLoadingChat(1);
   let thread;
-  if(event.target.id == 0)
+  const personElement = event.currentTarget;
+  console.log(personElement.id)
+  if(personElement.id === "0")
   {
     console.log("create new thread");
+    console.log(personElement.dataset)
     let newThreadData = {
       name : "DM",
       Type : "DM",
-      Members : [userInfo.user_id, event.currentTarget.dataset.id],
+      Members : [userInfo.user_id, personElement.dataset.id],
       created_by : userInfo.user_id,
     }
     console.log(newThreadData)
@@ -165,12 +168,12 @@ const createChatSelectHandler = (supabase, userInfo, threads, threadData, setIsL
     .select();
     console.log(data, error);
     console.log("get thread");
-    
+    window.location.reload(true)
   }
   else
   {
     console.log("fetch thread");
-    thread = threads.find((thread)=> thread.id == event.target.id)
+    thread = threads.find((thread)=> thread.id == personElement.id)
   }
   setThreadData(thread);
   setScreenState([1, screenState[0]]);

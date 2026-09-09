@@ -20,7 +20,7 @@ async function sendMessage(supabase, message, threadId, authorId)
 export default function Footer()
 {
     const [threadData, setThreadData] = useContext(ThreadData)
-    const uData = useContext(userData);
+    const [userInfo] = useContext(userData);
     const supabase = useContext(supabaseClient);
     const [message, setMessage] = useState("");
     const [isSending, setIsSending] = useState(0);
@@ -29,7 +29,7 @@ export default function Footer()
         if(message == "")
         {return }
         setIsSending(1);
-        const error = await sendMessage(supabase, message, threadData.id, uData.user_id);
+        const error = await sendMessage(supabase, message, threadData.id, userInfo.user_id);
         if(!error)
         {
             setMessage("");

@@ -62,7 +62,7 @@ export function useContactPanel(r) {
       if (!data.isDrag) return;
 
       data.dx = event.clientX - data.startX;
-      data.currentWidth = Math.max(500, data.startWidth + data.dx);
+      data.currentWidth = Math.min(Math.max(window.innerWidth * 0.2, data.startWidth + data.dx), window.innerWidth * 0.8);
       panel.style.width = `${data.currentWidth}px`;
     };
 

@@ -42,6 +42,8 @@ export default function Contact(props) {
     // Only initialize contacts on first load
     if(!isInitialized && userInfo && userInfo.friends)
     {
+      console.clear()
+      console.log("test")
       if(userInfo.Threads[0] != null) setThreads(userInfo.Threads);
       setIsInitialized(true);
     }
