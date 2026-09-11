@@ -6,17 +6,12 @@ import {supabaseClient} from '../../contexts'
 import { ClipLoader } from "react-spinners";
 async function signUp(supabase, datain)
 {
-    const { data, error } = await supabase.auth.signUp({
-        phone: datain.phone,
-        password: datain.pass,
-        options: {
-            datain: {
-                first_name: datain.firstName,
-                second_name: datain.secondName,
-                email: datain.email,
-            },
-        },
-    });
+    const { data, error } = await supabase.auth.signInWithOtp({
+    email: datain.email,
+    options: {
+        shouldCreateUser: true,
+    }
+    })    
     console.log(data)
     return { data, error };
 }
@@ -27,16 +22,16 @@ export default function Signup(props)
     //contexts
     const supabase = useContext(supabaseClient)
     //variables
-    const phone = props.phone;
-    const setPhone = props.setPhone;
+    const email = props.email;
+    const setEmail = props.setEmail;
     //states
     const [isLoading, setIsLoading] = useState(0);
     const [pass, setPass] = useState("159753");
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     //handlers
-    const phoneChangeHandler = (e)=>{
-        setPhone(e.target.value);
+    const emailChangeHandler = (e)=>{
+        setEmail(e.target.value);
     }
     const passChangeHandler = (e)=>{
         setPass(e.target.value);
@@ -49,8 +44,8 @@ export default function Signup(props)
 
         const data =
         {
+            email : email,
             pass : pass,
-            phone : phone
         }
         const { data: authData, error } = await signUp(supabase, data);
 
@@ -60,18 +55,19 @@ export default function Signup(props)
             return;
         }
 
-        if (!authData.user) {
-            setErrorMessage("Could not create the account. Please try again.");
-            setIsLoading(0);
-            return;
-        }
-        setSuccessMessage("Account created. Check your phone for the verification code.");
+        // if (!authData.user) {
+        //     setErrorMessage("Could not create the account. Please try again.");
+        //     setIsLoading(0);
+        //     return;
+        // }
+        setSuccessMessage("Account created. Check your email for the verification code.");
         props.setProcess(1);
         setIsLoading(0);
     }
     
     return(
         <div className="auth-card">
+            <button> back </button>
             <div className="auth-card__brand"><span className="auth-card__brand-mark">C</span> Chatspace</div>
             <div className="auth-card__heading">
                 <p className="auth-card__eyebrow">Create account</p>
@@ -79,13 +75,14 @@ export default function Signup(props)
                 <p>Set up your account in just a moment.</p>
             </div>
             <form action="" onSubmit={onSubmit} className="auth-form">
-                {/* <div className="auth-form__field">
-                    <label htmlFor="password">Password</label>
-                    <input type="password" name="password" id="password" value={pass} required minLength={6} placeholder="At least 6 characters" onChange={passChangeHandler}/>
-                </div> */}
+
                 <div className="auth-form__field">
-                    <label htmlFor="phoneNumber">Phone number</label>
-                    <input type="tel" name="phoneNumber" id="phoneNumber" value={phone} required placeholder="+201XXXXXXXXX" onChange={phoneChangeHandler}/>
+                    <label htmlFor="email">email</label>
+                    <input type="email" name="email" id="email" value={email} required placeholder=""email onChange={emailChangeHandler}/>
+                </div>
+                <div className="auth-form__field">
+                    <label htmlFor="password">Password</label>
+                    <input type="password" name="password" id="password" value={pass} required minLength={8} placeholder="At least 8 characters" onChange={passChangeHandler}/>
                 </div>
                 <button className="auth-form__submit" type="submit" disabled={isLoading} aria-busy={Boolean(isLoading)}>{isLoading? <><ClipLoader /><span>Creating account...</span></> : <span aria-hidden="true">Create account →</span>}</button>
             </form>

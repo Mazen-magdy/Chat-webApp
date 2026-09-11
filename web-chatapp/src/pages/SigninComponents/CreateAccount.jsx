@@ -46,7 +46,7 @@ export default function CreateAccount(props){
     //states
     const [isLoading, setIsLoading] = useState(0);
     const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
     const [profile_img, setProfile_img] = useState(null);
     //ref
     const creatAcc_err = useRef(null);
@@ -54,8 +54,8 @@ export default function CreateAccount(props){
     const nameChangeHandler = (e)=>{
         setName(e.target.value);
     }
-    const emailChangeHandler = (e)=>{
-        setEmail(e.target.value);
+    const phoneChangeHandler = (e)=>{
+        setPhone(e.target.value);
     }
     const profileChangeHandler = (e)=>{
         console.log(e.target);
@@ -67,19 +67,18 @@ export default function CreateAccount(props){
          const data = {
             id : localStorage.getItem("id"),
             name : name,
-            email : email,
-            phone : props.phone,
+            email : props.email,
+            phone : phone,
             profile : profile_img
         }
-        const {error:status} = await createAcc(supabase, data);
+        const status = await createAcc(supabase, data);
         if(!status)
         {
-           
             navigate('../dashboard')
         }
         else{
             console.log(creatAcc_err.current)
-            creatAcc_err.current.value = status;
+            creatAcc_err.current.textContent = status.message;
             creatAcc_err.current.classList.remove("disabled");
         }
         console.log(status); // debug
@@ -87,6 +86,7 @@ export default function CreateAccount(props){
     }
     return(
         <div className="auth-card">
+            <button> back </button>
             <div className="auth-card__brand"><span className="auth-card__brand-mark">C</span> Chatspace</div>
             <div className="auth-card__heading">
                 <p className="auth-card__eyebrow">Almost there</p>
@@ -100,8 +100,8 @@ export default function CreateAccount(props){
                     <input type="text" name="firstname" id="firstname" value={name} required placeholder="Your full name" onChange={nameChangeHandler} />
                 </div>
                 <div className="auth-form__field">
-                    <label htmlFor="email">Email address</label>
-                    <input type="email" name="email" id="email" value={email} required placeholder="you@example.com" onChange={emailChangeHandler}/>
+                    <label htmlFor="phone">PhoneNumber</label>
+                    <input type="tel" name="phone" id="phone" value={phone} required placeholder="+xx xxx..." onChange={phoneChangeHandler}/>
                 </div>
                 <div className="auth-form__field">
                     <label htmlFor="profileImg" value={profile_img} >Profile picture</label>

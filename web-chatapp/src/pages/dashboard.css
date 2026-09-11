@@ -705,3 +705,35 @@
 @media (prefers-reduced-motion: reduce){
     *, *::before, *::after{ animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+
+#signout{
+    width: 100%;
+    min-height: 46px;
+    padding: 10px 16px;
+    border: 1px solid rgba(242, 125, 104, .45);
+    border-radius: 12px;
+    color: #b94f3d;
+    background-color: rgba(242, 125, 104, .08);
+    font-size: .9rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background-color .2s ease, border-color .2s ease, color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+#signout:hover{
+    border-color: var(--accent-color);
+    color: var(--background);
+    background-color: var(--accent-color);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(242, 125, 104, .22);
+}
+
+#signout:active{
+    transform: translateY(0) scale(.99);
+}
+
+#signout:disabled{
+    cursor: wait;
+    opacity: .65;
+}

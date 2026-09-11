@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import {supabaseClient} from '../contexts'
 
 //components
-import PhoneForm from "./SigninComponents/PhoneForm"
+import EmailForm from "./SigninComponents/EmailForm"
 import VerifyForm from "./SigninComponents/Verify"
 import Signup from "./SigninComponents/Signup";
 import CreateAccount from "./SigninComponents/CreateAccount"
@@ -16,7 +16,7 @@ export default function Enter()
 {
     //states
     const [process, setProcess] = useState(4); // 0 signin, 1 verify, 2 signup, 3 createAccount, 4 choose signIn/signUp
-    const [phone, setPhone] = useState("");
+    const [email, setEmail] = useState("");
     const [operationType, setOperationType] = useState("");
     //handlers
     const operationHandler = (e)=>{
@@ -33,35 +33,39 @@ export default function Enter()
     const render = () =>{
         if(process == 0)
         {
-            return  <PhoneForm process= {process} setProcess = {setProcess} phone={phone} setPhone={setPhone} /> 
+            return  <EmailForm process= {process} setProcess = {setProcess} email={email} setEmail={setEmail} /> 
         }
         else if(process == 1)
         {
-            return <VerifyForm phone = {phone} operation ={operationType} setProcess = {setProcess}/> 
+            return <VerifyForm email = {email} operation ={operationType} setProcess = {setProcess}/> 
         }
         else if(process == 2) 
         {
-            return <Signup process= {process} setProcess = {setProcess} phone={phone} setPhone={setPhone}/>
+            return <Signup process= {process} setProcess = {setProcess} email={email} setEmail={setEmail}/>
         }
         else if(process == 3)
         {
-            return <CreateAccount phone = {phone} />
+            return <CreateAccount email = {email} />
         }
         else{
-            return <div className="auth-choice">
-                <div className="auth-card__brand"><span className="auth-card__brand-mark">C</span> Chatspace</div>
-                <div className="auth-choice__content">
-                    <p className="auth-card__eyebrow">Welcome</p>
-                    <h1>Your conversations, all in one place.</h1>
-                    <p>Stay in touch with the people who matter most.</p>
-                </div>
-                <div className="auth-choice__actions">
-                    <button className="auth-choice__primary" name="signIn" onClick={operationHandler}>Sign in <span aria-hidden="true">→</span></button>
-                    <button className="auth-choice__secondary" name="signUp" onClick={operationHandler}>Create an account</button>
-                </div>
-            </div>
-            
+                return  <EmailForm process= {process} setProcess = {setProcess} email={email} setEmail={setEmail} /> 
+        
         }
+        // else{
+        //     return <div className="auth-choice">
+        //         <div className="auth-card__brand"><span className="auth-card__brand-mark">C</span> Chatspace</div>
+        //         <div className="auth-choice__content">
+        //             <p className="auth-card__eyebrow">Welcome</p>
+        //             <h1>Your conversations, all in one place.</h1>
+        //             <p>Stay in touch with the people who matter most.</p>
+        //         </div>
+        //         <div className="auth-choice__actions">
+        //             <button className="auth-choice__primary" name="signIn" onClick={operationHandler}>Sign in <span aria-hidden="true">→</span></button>
+        //             <button className="auth-choice__secondary" name="signUp" onClick={operationHandler}>Create an account</button>
+        //         </div>
+        //     </div>
+            
+        // }
     }
 
     return(

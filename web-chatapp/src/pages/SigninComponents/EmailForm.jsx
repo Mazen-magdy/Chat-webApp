@@ -5,41 +5,44 @@ import {supabaseClient} from '../../contexts'
 import "../signin.css"
 //libs
 import {ClipLoader} from "react-spinners"
-async function signInHandler(supabase, phoneNumber, setProcess)
+async function signInHandler(supabase, email, setProcess)
 {
-    console.log(phoneNumber); // debug
+    console.log(email); // debug
     const { data, error } = await supabase.auth.signInWithOtp({
-        phone: phoneNumber,
+        email: email,
+        options: {
+            shouldCreateUser: true, 
+        },
     })
     
     return {data, error}
 }
 
 
-export default function PhoneForm(props)
+export default function EmailForm(props)
 {
     //variables
     const process    = props.process;  
     const setProcess = props.setProcess;  
-    const phone = props.phone;
-    const setPhone = props.setPhone;
+    const email = props.email;
+    const setEmail = props.setEmail;
     //states
-    const [error, setError] = useState(0);
+    const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(0);
     //contexts
     const supabase = useContext(supabaseClient);
     //ref
     const LoginErr = useRef(null);
     //handlers
-    const phoneClickHandler = (e)=>{
+    const emailClickHandler = (e)=>{
         console.log(e)
-        setPhone(e.target.value);
+        setEmail(e.target.value);
     }
     const onSubmitHandler = async (e)=>{
         e.preventDefault();
         setIsLoading(1);
         setError(null);
-        const {data, error} = await signInHandler(supabase, phone, setProcess);
+        const {data, error} = await signInHandler(supabase, email, setProcess);
         console.log(data, error) // debug
 
         // state handler
@@ -51,28 +54,24 @@ export default function PhoneForm(props)
         else
         {
             console.log(data); // debug
-            if(!data.messageId)
-                console.error("NotFound");
-            else
-            {
                 setProcess(1); // go for verifying
-            }
         }
         setIsLoading(0);
     }
     return(
             <div className="auth-card">
+                <button> back </button>
                 <div className="auth-card__brand"><span className="auth-card__brand-mark">C</span> Chatspace</div>
                 <div className="auth-card__heading">
                     <p className="auth-card__eyebrow">Welcome back</p>
                     <h1>Sign in to your account</h1>
-                    <p>Enter your phone number and we’ll send you a secure verification code.</p>
+                    <p>Enter your Email and we’ll send you a secure verification code.</p>
                 </div>
-                {Boolean(error) && <p className="errorMessage" role="alert">Invalid Input Number</p>}
+                {Boolean(error) && <p className="errorMessage" role="alert">an error eoccured {error.message}</p>}
                 <form action="#" onSubmit={onSubmitHandler} className="auth-form sign">
                     <div className="auth-form__field">
-                        <label htmlFor="phoneNumber" >Phone number</label>
-                        <input type="tel" name="phoneNumber" id="phoneNumber" onChange={phoneClickHandler} value = {phone} placeholder="+xx xxxxxxxxxx" />
+                        <label htmlFor="email" >Email</label>
+                        <input type="tel" name="email" id="email" onChange={emailClickHandler} value = {email} placeholder="email" />
                     </div>
                     <button className="auth-form__submit" type="submit" disabled={isLoading} aria-busy={Boolean(isLoading)}>{(isLoading)? <><ClipLoader /><span>Sending code...</span></> : <span aria-hidden="true">Continue →</span>}</button>
                 </form>

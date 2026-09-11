@@ -1,30 +1,51 @@
-import { useCallback, useContext, useState} from 'react'
+import { useCallback, useContext, useRef, useState} from 'react'
 import { Route , useNavigate } from 'react-router-dom';
 //contexts
 import {supabaseClient} from '../../contexts'
 //libs
 import { ClipLoader } from 'react-spinners';
-async function verifyOTP(supabase, otp, phone)
+async function verifyOTP(supabase, otp, email, operation, errorRef)
 {
-    console.log(phone) //debug
+    console.log(email) //debug
+    console.log(otp) //debug
+
     const {
     data: { session },
     error,
     } = await supabase.auth.verifyOtp({
-    phone: phone,
+    email: email,
     token: otp,
-    type: 'sms',
+    type: 'email',
     })
     
     if(error)
     {
         console.log(error);
+        errorRef.current.textContent = error.message;
         return [error, null]
     }
     else{
 
         console.log(session)
-        return["ok", session]
+        const id = session.user.identities[0].user_id;
+        const {data, error:fetcherror} = await supabase
+        .from("user")
+        .select()
+        .eq("user_id", id);
+
+        console.log(data, fetcherror)
+        if(fetcherror)
+        {
+            return [fetcherror, null];
+        }
+        else if(data.length === 0)
+        {
+            return ["NotExists", session];
+        }
+        else{
+
+            return["ok", session]
+        }
     }
 }
 
@@ -34,12 +55,13 @@ export default function VerifyForm(props)
     //contexts
     const supabase = useContext(supabaseClient);
     //variables
-    const phone = props.phone;
+    const email = props.email;
     const operation = props.operation;
     const setProcess = props.setProcess;
     //states
     const [otp, setOTP] = useState("");
     const [isLoading, setIsLoading] = useState(0);
+    let errorref = useRef(null);
     //handlers
     const otpChangeHandler = (e)=>{
         setOTP(e.target.value)
@@ -47,23 +69,20 @@ export default function VerifyForm(props)
     const submitHandler = async (e)=>{
         e.preventDefault();
         setIsLoading(1);
-        const [status, data] = await verifyOTP(supabase, otp, phone);
+        const [status, data] = await verifyOTP(supabase, otp, email, operation, errorref);
         console.log(status, data); 
         if(status == "ok")
         {
-            if(operation == "signIn")
-            {
-
                 // save access token
                 localStorage.setItem("access-token", data.access_token);
                 localStorage.setItem("id", data.user.id);
                 // route to the dashboard
                 navigate('../dashboard');
-            }
-            else{
-                localStorage.setItem("id", data.user.id);
-                setProcess(3);
-            }
+
+        }
+        else if(status == "NotExists")
+        {
+            setProcess(3);
         }
         else
         {
@@ -77,7 +96,7 @@ export default function VerifyForm(props)
             <div className="auth-card__heading">
                 <p className="auth-card__eyebrow">One more step</p>
                 <h1>Verify your number</h1>
-                <p>Enter the 6-digit code sent to <strong>{phone}</strong>.</p>
+                <p>Enter the 6-digit code sent to <strong>{email}</strong>.</p>
             </div>
             <form id="verify-otp" onSubmit={submitHandler} className="auth-form">
                 <div className="auth-form__field">
@@ -86,10 +105,10 @@ export default function VerifyForm(props)
                 type="text" 
                 name="OTP"
                 id="OTP"
-                maxLength={6}
+                maxLength={8}
                 inputMode='numeric'
                 autoComplete='one-time-code'
-                pattern='\d{6}'
+                pattern='\d{8}'
                 value={otp}
                 onChange={otpChangeHandler}
                  />
@@ -97,6 +116,7 @@ export default function VerifyForm(props)
                  <button className="auth-form__submit" type='submit' disabled={isLoading} aria-busy={Boolean(isLoading)}>{ isLoading? <><ClipLoader /><span>Checking code...</span></> : <span aria-hidden="true">Verify code →</span>}</button>
             </form>
             <p className="auth-card__note">The code expires shortly for your security.</p>
+            <p ref={errorref} style={{color : "red"}}></p>
         </div>
     )
 }
