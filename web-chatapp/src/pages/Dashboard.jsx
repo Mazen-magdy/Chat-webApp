@@ -87,6 +87,7 @@ export default function Dashboard(){
                 phoneNumber,
                 imageUrl,
                 friends,
+                email,
                 Threads
                 `)
             .eq('user_id',id)

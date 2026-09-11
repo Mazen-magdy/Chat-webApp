@@ -82,6 +82,9 @@ export default function VerifyForm(props)
         }
         else if(status == "NotExists")
         {
+            // save access token
+            localStorage.setItem("access-token", data.access_token);
+            localStorage.setItem("id", data.user.id);
             setProcess(3);
         }
         else

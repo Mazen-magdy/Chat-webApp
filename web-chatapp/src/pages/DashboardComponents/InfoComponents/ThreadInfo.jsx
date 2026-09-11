@@ -5,8 +5,11 @@ import ImgViewer from "../../../helperComponents/ImgViewer"
 export default function ThreadInfo()
 {
     const [threadData] = useContext(ThreadData)
-    
     const [viewImgData, setViewImgData] = useState({state : 0, url : ""});
+    if(!threadData?.id)
+    {
+        return null;
+    }
      const handleImgClose = (e) =>{
         setViewImgData({state : 0, url : viewImgData.url});
     }
