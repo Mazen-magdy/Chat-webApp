@@ -97,6 +97,7 @@ export default function Dashboard(){
             {
                 if(error.details = "The result contains 0 rows")
                 {
+                    localStorage.clear();
                     navigate("../enter");
                 }
             }

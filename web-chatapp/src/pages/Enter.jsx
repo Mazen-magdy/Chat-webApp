@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-
+import {useNavigate} from "react-router-dom"
 import {supabaseClient} from '../contexts'
 
 //components
@@ -14,6 +14,7 @@ import "./signin.css"
 
 export default function Enter()
 {
+    const navigate = useNavigate()
     //states
     const [process, setProcess] = useState(4); // 0 signin, 1 verify, 2 signup, 3 createAccount, 4 choose signIn/signUp
     const [email, setEmail] = useState("");
@@ -67,7 +68,14 @@ export default function Enter()
             
         // }
     }
-
+    useEffect(()=>{
+        const token = localStorage.getItem("access-token")
+        const id = localStorage.getItem("id");
+        if(token && id)
+        {
+            navigate("./dashboard");
+        }
+    })
     return(
         <div id="signinContainer">
             {render()}
