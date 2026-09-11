@@ -86,7 +86,6 @@ export default function CreateAccount(props){
     }
     return(
         <div className="auth-card">
-            <button> back </button>
             <div className="auth-card__brand"><span className="auth-card__brand-mark">C</span> Chatspace</div>
             <div className="auth-card__heading">
                 <p className="auth-card__eyebrow">Almost there</p>

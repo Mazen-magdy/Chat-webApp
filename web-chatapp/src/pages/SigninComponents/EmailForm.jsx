@@ -60,7 +60,6 @@ export default function EmailForm(props)
     }
     return(
             <div className="auth-card">
-                <button> back </button>
                 <div className="auth-card__brand"><span className="auth-card__brand-mark">C</span> Chatspace</div>
                 <div className="auth-card__heading">
                     <p className="auth-card__eyebrow">Welcome back</p>
@@ -71,7 +70,7 @@ export default function EmailForm(props)
                 <form action="#" onSubmit={onSubmitHandler} className="auth-form sign">
                     <div className="auth-form__field">
                         <label htmlFor="email" >Email</label>
-                        <input type="tel" name="email" id="email" onChange={emailClickHandler} value = {email} placeholder="email" />
+                        <input type="email" name="email" id="email" onChange={emailClickHandler} value = {email} placeholder="email" />
                     </div>
                     <button className="auth-form__submit" type="submit" disabled={isLoading} aria-busy={Boolean(isLoading)}>{(isLoading)? <><ClipLoader /><span>Sending code...</span></> : <span aria-hidden="true">Continue →</span>}</button>
                 </form>
